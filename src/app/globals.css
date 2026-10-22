@@ -1,0 +1,155 @@
+@import 'tailwindcss';
+
+/* Identidad Quamtu: primario #238DC1, secundario #385CAD, apoyo #686058 (manual). Fondo oscuro del brochure. */
+@theme {
+  --color-bg: #060b17;
+  --color-panel: #0a1426;
+  --color-line: #16284a;
+  --color-cyan: #238dc1;
+  --color-violet: #385cad;
+  --color-claro: #6cc3ee;
+  /* Relleno de botones y chips con texto blanco: el azul de marca un tono más profundo llega a 4.5:1 */
+  --color-boton: #1b79ab;
+  --color-apoyo: #686058;
+  --font-display: var(--font-play), system-ui, sans-serif;
+  --font-sans: var(--font-carlito), Calibri, system-ui, sans-serif;
+}
+
+/* Títulos en mayúsculas; los nombres de producto usan .normal-case para respetar la escritura "Quamtu" del manual. */
+@layer base {
+  h1, h2, h3 { text-transform: uppercase; letter-spacing: 0.02em; text-wrap: balance; }
+  p, li, dd { text-wrap: pretty; }
+}
+
+/* Superficies del navegador con la paleta de marca */
+:focus-visible { outline: 2px solid var(--color-claro); outline-offset: 3px; border-radius: 4px; }
+::selection { background: rgba(35, 141, 193, 0.55); color: #fff; }
+
+/* Temas: oscuro (brochure), claro (manual de identidad) y medio (cuerpo claro con héroe y pie oscuros).
+   Todo se resuelve con variables, así un bloque .zona-oscura puede vivir dentro de un tema claro. */
+:root, [data-tema="oscuro"], .tema-oscuro, [data-tema="medio"] footer, [data-tema="medio"] .zona-oscura {
+  --color-bg: #060b17; --color-panel: #0a1426; --color-line: #16284a; --color-claro: #6cc3ee;
+  --c-cuerpo: #dbe7f3; --c-titulo: #ffffff; --c-2: #e2e8f0; --c-3: #cbd5e1; --c-4: #90a1b9; --c-ph: #8294ad;
+  --c-borde: #6b88b0; --c-error: #fca5a5;
+  --hud-fondo: linear-gradient(160deg, rgba(35,141,193,.14), rgba(10,20,38,.8));
+  --hud-borde: rgba(35,141,193,.45);
+  --hud-sombra: inset 0 1px 0 rgba(108,195,238,.12), 0 12px 32px rgba(0,0,0,.35);
+  --glass-fondo: rgba(10,20,38,.7);
+  --btn-borde: rgba(108,195,238,.5); --btn-borde-hover: rgba(35,141,193,.18);
+  --d-logo-osc: inline; --d-logo-cla: none;
+}
+[data-tema="claro"], [data-tema="medio"], .tema-claro {
+  --color-bg: #ffffff; --color-panel: #f2f6fa; --color-line: #d5e0ea; --color-claro: #1b79ab;
+  --c-cuerpo: #686058; --c-titulo: #385cad; --c-2: #4d463f; --c-3: #5f5850; --c-4: #6b645b; --c-ph: #8a8379;
+  --c-borde: #6b7f95; --c-error: #b91c1c;
+  --hud-fondo: linear-gradient(160deg, rgba(35,141,193,.08), #ffffff);
+  --hud-borde: rgba(35,141,193,.4);
+  --hud-sombra: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 28px rgba(27,60,100,.12);
+  --glass-fondo: rgba(255,255,255,.82);
+  --btn-borde: rgba(27,121,171,.6); --btn-borde-hover: rgba(35,141,193,.1);
+  --d-logo-osc: none; --d-logo-cla: inline;
+}
+[data-tema="medio"] .zona-oscura, [data-tema="medio"] footer { color: var(--c-cuerpo); }
+/* El pie del tema medio es oscuro: fondo opaco (con el 60% sobre el cuerpo blanco quedaba gris y los textos no llegaban a AA). */
+[data-tema="medio"] footer { background: var(--color-panel); }
+
+html { background: var(--color-bg); color: var(--c-cuerpo); scroll-behavior: smooth; }
+
+/* Los textos fijos de los componentes siguen el tema (el nombre de clase se conserva) */
+.text-white { color: var(--c-titulo); }
+.text-slate-200 { color: var(--c-2); }
+.text-slate-300 { color: var(--c-3); }
+.text-slate-400 { color: var(--c-4); }
+.bg-boton.text-white, .bg-cyan.text-white, .btn-neon { color: #fff; }
+.logo-sobre-oscuro { display: var(--d-logo-osc); }
+.logo-sobre-claro { display: var(--d-logo-cla); }
+
+body { font-family: var(--font-sans); font-size: 1.05rem; -webkit-font-smoothing: antialiased; }
+html, body { overflow-x: clip; }
+.sin-barra { scrollbar-width: none; }
+.sin-barra::-webkit-scrollbar { display: none; }
+
+.titulo-neon { color: var(--color-claro); }
+
+/* Entrada del primer pantallazo: solo CSS, así el texto aparece sin esperar al JS ni al 3D. */
+@keyframes entra { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.entra { animation: entra 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+
+@media (prefers-reduced-motion: reduce) {
+  .entra { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+.rejilla {
+  background-image:
+    linear-gradient(to right, rgba(35,141,193,.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(35,141,193,.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+
+/* Panel de vidrio con marco HUD (esquinas cian) como en el brochure */
+.glass { background: var(--glass-fondo); backdrop-filter: blur(14px); border: 1px solid var(--color-line); }
+.hud {
+  position: relative; background: var(--hud-fondo);
+  border: 1px solid var(--hud-borde); backdrop-filter: blur(10px);
+  box-shadow: var(--hud-sombra);
+}
+.hud::before, .hud::after {
+  content: ''; position: absolute; width: 14px; height: 14px; border: 2px solid var(--color-claro); pointer-events: none;
+}
+.hud::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+.hud::after { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+
+.btn-neon {
+  background: linear-gradient(100deg, var(--color-boton), var(--color-violet));
+  color: #fff; font-weight: 700; letter-spacing: .04em;
+  box-shadow: 0 8px 22px rgba(10,40,70,.5); transition: transform .2s, box-shadow .2s;
+}
+.btn-neon { position: relative; overflow: hidden; isolation: isolate; }
+.btn-neon::after { content: ''; position: absolute; inset: 0; z-index: -1; transform: translateX(-120%) skewX(-20deg); background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent); transition: transform .6s ease; }
+.btn-neon:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 32px rgba(35,141,193,.55); }
+.btn-neon:hover::after { transform: translateX(120%) skewX(-20deg); }
+.btn-neon:active, .btn-borde:active { transform: translateY(0) scale(.98); }
+.btn-neon svg, .btn-borde svg { transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
+.btn-neon:hover svg, .btn-borde:hover svg { transform: translateX(4px) rotate(-6deg) scale(1.15); }
+.btn-borde { border: 1px solid var(--btn-borde); color: var(--c-titulo); transition: background .2s, border-color .2s, transform .2s, box-shadow .2s; }
+.btn-borde:hover { background: var(--btn-borde-hover); border-color: var(--color-claro); transform: translateY(-3px) scale(1.03); box-shadow: 0 10px 24px rgba(35,141,193,.3); }
+@media (prefers-reduced-motion: reduce) { .btn-neon:hover, .btn-borde:hover, .btn-neon:hover svg, .btn-borde:hover svg { transform: none; } .btn-neon::after { display: none; } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+@keyframes widget-flota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.widget-flota { animation: widget-flota 5s ease-in-out infinite; animation-delay: var(--d, 0s); }
+@media (prefers-reduced-motion: reduce) { .widget-flota { animation: none; } }
+
+/* Botón flotante de WhatsApp: sin hover propio; pulsaciones suaves (anillos que se expanden) */
+.wa-boton {
+  background: linear-gradient(100deg, var(--color-boton), var(--color-violet));
+  color: #fff; box-shadow: 0 8px 22px rgba(10,40,70,.5);
+}
+.wa-pulso::before, .wa-pulso::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 9999px;
+  background: var(--color-claro); opacity: 0; animation: wa-onda 2.8s ease-out infinite;
+}
+.wa-pulso::after { animation-delay: 1.4s; }
+@keyframes wa-onda { 0% { transform: scale(1); opacity: .45; } 100% { transform: scale(1.9); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .wa-pulso::before, .wa-pulso::after { animation: none; } }
+
+/* Respuesta de las preguntas frecuentes: aparece deslizándose suavemente */
+@keyframes faq-abre { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.faq[open] .faq-resp { animation: faq-abre .3s ease; }
+@media (prefers-reduced-motion: reduce) { .faq[open] .faq-resp { animation: none; } }
+
+/* Impresión de la hoja de reclamación: papel blanco, tinta del tema claro, sin cabecera, pie ni botones flotantes. */
+@media print {
+  :root, [data-tema] {
+    --color-bg: #fff; --color-panel: #fff; --color-line: #999; --color-claro: #1b79ab;
+    --c-cuerpo: #222; --c-titulo: #000; --c-2: #222; --c-3: #222; --c-4: #444;
+    --c-error: #b91c1c;
+  }
+  html, body { background: #fff !important; color: #222; }
+  header, footer, .fixed { display: none !important; }
+  main { padding-top: 0 !important; }
+  .hud, .glass { background: #fff !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
+  .hud::before, .hud::after { display: none; }
+}
